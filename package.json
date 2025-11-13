@@ -1,0 +1,21 @@
+{
+  "name": "twitch-roblox-relay",
+  "version": "1.0.0",
+  "description": "A lightweight Node.js backend to relay Twitch chat messages to Roblox servers.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
+    "tmi.js": "^1.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "license": "MIT"
+}
