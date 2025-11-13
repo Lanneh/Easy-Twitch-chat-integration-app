@@ -1,7 +1,7 @@
-# 🎮 Twitch → Roblox Relay
+# Twitch → Roblox Relay
 A lightweight Node.js backend that connects to a Twitch chat and relays messages into your Roblox game via HTTPS.
 
-## ✨ Features
+## Features
 - Connect any Twitch channel in seconds
 - One connection per Roblox server
 - Reliable message queue system
@@ -9,8 +9,9 @@ A lightweight Node.js backend that connects to a Twitch chat and relays messages
 
 ---
 
-## 🚀 Setup
+## Setup
 
 1. **Install dependencies**
    ```bash
+
    npm install
