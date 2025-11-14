@@ -1,5 +1,6 @@
 import tmi from "tmi.js";
 import { log } from "../utils/logger.js";
+import { checkVerificationMessage } from "./verifyManager.js";
 
 export const activeServers = {};
 const MAX_MESSAGES = 500;
@@ -13,7 +14,7 @@ export async function connectTwitch(username, serverId) {
 
   client.on("message", (channel, tags, message, self) => {
     // Check pending verification first
-    import("./verifyManager.js").then(vm => vm.checkVerificationMessage(channel, message));
+    checkVerificationMessage(channel, message);
 
     if (!activeServers[serverId]) return;
     const user = tags["display-name"] || tags.username || "unknown";
@@ -21,8 +22,9 @@ export async function connectTwitch(username, serverId) {
 
     const server = activeServers[serverId];
     server.messages.push(entry);
-    if (server.messages.length > 500) server.messages.shift();
-});
+    if (server.messages.length > MAX_MESSAGES) server.messages.shift();
+  });
+
 
 
   client.on("disconnected", (reason) =>
@@ -84,4 +86,5 @@ export function getServerMessages(serverId) {
   const msgs = activeServers[serverId].messages.splice(0);
   return msgs;
 }
+
 
