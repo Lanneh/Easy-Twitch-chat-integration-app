@@ -1,5 +1,5 @@
 import express from "express";
-import { unregisterServer } from "../clientManager.js";
+import { unregisterServer } from "../twitch/clientManager.js";
 
 export const unregisterRoute = express.Router();
 
@@ -11,3 +11,4 @@ unregisterRoute.post("/", async (req, res) => {
     if (success) res.json({ status: "ok" });
     else res.status(500).json({ error: "Failed to unregister Twitch client" });
 });
+
