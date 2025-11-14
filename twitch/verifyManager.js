@@ -1,11 +1,9 @@
 import tmi from "tmi.js";
-import { activeServers } from "./clientManager.js";
 
 export const pendingConnections = {}; // serverId -> { username, client, resolve }
 
 export async function requestVerification(username, serverId, timeoutSeconds = 60) {
     return new Promise(async (resolve, reject) => {
-        // Create temporary Twitch client
         const client = new tmi.Client({
             channels: [username.toLowerCase()],
             connection: { reconnect: false, secure: true },
@@ -20,9 +18,15 @@ export async function requestVerification(username, serverId, timeoutSeconds = 6
             }
         });
 
-        client.on("connected", () => console.log(`[Twitch] Verification listener connected for ${username}`));
-        client.on("disconnected", () => console.log(`[Twitch] Verification listener disconnected for ${username}`));
-        client.on("error", (err) => console.error(`[Twitch] Verification listener error for ${username}:`, err));
+        client.on("connected", () =>
+            console.log(`[Twitch] Verification listener connected for ${username}`)
+        );
+        client.on("disconnected", () =>
+            console.log(`[Twitch] Verification listener disconnected for ${username}`)
+        );
+        client.on("error", (err) =>
+            console.error(`[Twitch] Verification listener error for ${username}:`, err)
+        );
 
         pendingConnections[serverId] = { username, client, resolve };
 
@@ -33,7 +37,6 @@ export async function requestVerification(username, serverId, timeoutSeconds = 6
             return reject(err);
         }
 
-        // Auto timeout
         setTimeout(() => {
             if (pendingConnections[serverId]) {
                 client.disconnect();
@@ -42,4 +45,16 @@ export async function requestVerification(username, serverId, timeoutSeconds = 6
             }
         }, timeoutSeconds * 1000);
     });
+}
+
+export function checkVerificationMessage(channel, message) {
+    for (const serverId in pendingConnections) {
+        const pending = pendingConnections[serverId];
+        if (pending.username.toLowerCase() === channel.toLowerCase() && message.toLowerCase() === "accept") {
+            pending.resolve(true);
+            pending.client.disconnect();
+            delete pendingConnections[serverId];
+            console.log(`[Twitch] Verification ACCEPT detected for ${channel} (server ${serverId})`);
+        }
+    }
 }
