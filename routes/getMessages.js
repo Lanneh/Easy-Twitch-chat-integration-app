@@ -1,12 +1,12 @@
 import express from "express";
-import { getServerMessages } from "../twitch/clientManager.js";
+import { getServerMessages } from "../clientManager.js";
 
 export const getMessagesRoute = express.Router();
 
 getMessagesRoute.get("/", (req, res) => {
-  const { serverId } = req.query;
-  if (!serverId) return res.status(400).json({ error: "Missing serverId" });
+    const { serverId } = req.query;
+    if (!serverId) return res.status(400).json({ error: "Missing serverId" });
 
-  const messages = getServerMessages(serverId);
-  res.json(messages);
+    const messages = getServerMessages(serverId);
+    res.json(messages);
 });
