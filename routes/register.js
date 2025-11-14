@@ -1,5 +1,5 @@
 import express from "express";
-import { registerServer } from "../clientManager.js";
+import { registerServer } from "../twitch/clientManager.js";
 
 export const registerRoute = express.Router();
 
@@ -14,3 +14,4 @@ registerRoute.post("/", async (req, res) => {
         res.status(500).json({ error: "Failed to register Twitch client" });
     }
 });
+
