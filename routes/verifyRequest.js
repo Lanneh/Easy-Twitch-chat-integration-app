@@ -1,5 +1,5 @@
 import express from "express";
-import { requestVerification } from "../verifyManager.js";
+import { requestVerification } from "../twitch/verifyManager.js";
 
 export const verifyRoute = express.Router();
 
