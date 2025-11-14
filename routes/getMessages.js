@@ -1,5 +1,5 @@
 import express from "express";
-import { getServerMessages } from "../clientManager.js";
+import { getServerMessages } from "../twitch/clientManager.js";
 
 export const getMessagesRoute = express.Router();
 
@@ -10,3 +10,4 @@ getMessagesRoute.get("/", (req, res) => {
     const messages = getServerMessages(serverId);
     res.json(messages);
 });
+
