@@ -12,14 +12,18 @@ export async function connectTwitch(username, serverId) {
   });
 
   client.on("message", (channel, tags, message, self) => {
+    // Check pending verification first
+    import("./verifyManager.js").then(vm => vm.checkVerificationMessage(channel, message));
+
     if (!activeServers[serverId]) return;
     const user = tags["display-name"] || tags.username || "unknown";
     const entry = { user, text: message, timestamp: Date.now() };
 
     const server = activeServers[serverId];
     server.messages.push(entry);
-    if (server.messages.length > MAX_MESSAGES) server.messages.shift();
-  });
+    if (server.messages.length > 500) server.messages.shift();
+});
+
 
   client.on("disconnected", (reason) =>
     log.warn(`Twitch client disconnected (${serverId}): ${reason}`)
@@ -80,3 +84,4 @@ export function getServerMessages(serverId) {
   const msgs = activeServers[serverId].messages.splice(0);
   return msgs;
 }
+
