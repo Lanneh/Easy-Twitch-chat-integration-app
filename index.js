@@ -17,10 +17,9 @@ app.use("/verifyRequest", verifyRoute);
 // Health check
 app.get("/", (req, res) => res.send("✅ Twitch Relay Backend is running"));
 app.get("/status", (req, res) => res.json({
-  uptime: process.uptime(),
-  timestamp: new Date().toISOString()
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
 }));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => log.info(`Server running on port ${PORT}`));
-
