@@ -81,3 +81,4 @@ export function getServerMessages(serverId) {
     if (!activeServers[serverId]) return [];
     return activeServers[serverId].messages.splice(0);
 }
+
