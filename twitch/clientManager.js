@@ -1,6 +1,5 @@
 import tmi from "tmi.js";
 import { log } from "../utils/logger.js";
-import { checkVerificationMessage } from "./verifyManager.js";
 
 export const activeServers = {};
 export const MAX_MESSAGES = 500;
@@ -13,16 +12,17 @@ export async function connectTwitch(username, serverId) {
     });
 
     client.on("message", (channel, tags, message, self) => {
-        checkVerificationMessage(channel, message);
+    // REMOVE this line:
+    // checkVerificationMessage(channel, message);
 
-        if (!activeServers[serverId]) return;
+    if (!activeServers[serverId]) return;
 
-        const user = tags["display-name"] || tags.username || "unknown";
-        const entry = { user, text: message, timestamp: Date.now() };
-        const server = activeServers[serverId];
-        server.messages.push(entry);
+    const user = tags["display-name"] || tags.username || "unknown";
+    const entry = { user, text: message, timestamp: Date.now() };
+    const server = activeServers[serverId];
+    server.messages.push(entry);
 
-        if (server.messages.length > MAX_MESSAGES) server.messages.shift();
+    if (server.messages.length > MAX_MESSAGES) server.messages.shift();
     });
 
     client.on("disconnected", reason =>
