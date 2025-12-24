@@ -1,11 +1,3 @@
-import tmi from "tmi.js";
-
-export const pendingConnections = {}; // serverId -> { username, code, verified, client }
-
-function generateCode() {
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
-}
-
 export function startVerification(username, serverId, timeoutSeconds = 60) {
     const code = generateCode();
     const expected = `confirm ${code}`.toLowerCase();
@@ -20,6 +12,7 @@ export function startVerification(username, serverId, timeoutSeconds = 60) {
         username,
         code,
         verified: false,
+        expired: false, // new flag
         client
     };
 
@@ -34,16 +27,20 @@ export function startVerification(username, serverId, timeoutSeconds = 60) {
     client.connect();
 
     setTimeout(() => {
-        if (pendingConnections[serverId] && !pendingConnections[serverId].verified) {
+        const pending = pendingConnections[serverId];
+        if (pending && !pending.verified) {
+            pending.expired = true;          // mark as expired
             client.disconnect();
-            delete pendingConnections[serverId];
             console.log(`[Twitch] TIMEOUT ${username}`);
         }
     }, timeoutSeconds * 1000);
 
-    return code; // immediately return the code to Roblox
+    return code;
 }
 
+// Updated status check
 export function getVerificationStatus(serverId) {
-    return !!pendingConnections[serverId]?.verified;
+    const pending = pendingConnections[serverId];
+    if (!pending) return { verified: false, expired: true };
+    return { verified: pending.verified, expired: pending.expired };
 }
