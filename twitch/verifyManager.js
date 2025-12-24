@@ -5,7 +5,7 @@ export const pendingConnections = {};
 
 // Helper to generate a random 6-character uppercase code
 function generateCode() {
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
+    return Math.random().toString(36).substring(2, 6).toUpperCase();
 }
 
 // Start verification for a Twitch user
