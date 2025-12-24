@@ -8,8 +8,8 @@ verifyStatusRoute.get("/", (req, res) => {
     if (!serverId) return res.status(400).json({ error: "Missing serverId" });
 
     try {
-        const verified = getVerificationStatus(serverId);
-        res.json({ verified });
+        const status = getVerificationStatus(serverId);
+        res.json(status); // { verified: true/false, expired: true/false }
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
