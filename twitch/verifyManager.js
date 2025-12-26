@@ -28,13 +28,22 @@ export function startVerification(username, serverId, timeoutSeconds = 60) {
     };
 
     // Listen for the confirm message
-    client.on("message", (channel, tags, message) => {
-        if (message.toLowerCase().trim() === expected) {
-            pendingConnections[serverId].verified = true;
-            client.disconnect();
-            console.log(`[Twitch] VERIFIED ${username} (${serverId})`);
-        }
-    });
+   client.on("message", (channel, tags, message) => {
+    // Make sure the message is from the streamer themselves
+    if (!tags?.username) return;
+
+    const sender = tags.username.toLowerCase();
+    const expectedUser = username.toLowerCase();
+
+    if (
+        sender === expectedUser &&
+        message.toLowerCase().trim() === expected
+    ) {
+        pendingConnections[serverId].verified = true;
+        client.disconnect();
+        console.log(`[Twitch] VERIFIED ${username} (${serverId})`);
+    }
+   });
 
     // Connect safely
     try {
